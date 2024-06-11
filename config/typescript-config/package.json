@@ -1,5 +1,5 @@
 {
-  "name": "@saas/typescript-config",
+  "name": "@saas/tsconfig",
   "private": true,
   "license": "MIT",
   "publishConfig": {

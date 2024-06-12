@@ -2,7 +2,5 @@
   "name": "@saas/tsconfig",
   "private": true,
   "license": "MIT",
-  "publishConfig": {
-    "access": "public"
-  }
+  "files": ["library.json"]
 }

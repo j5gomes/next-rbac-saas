@@ -2,5 +2,5 @@
   "name": "@saas/tsconfig",
   "private": true,
   "license": "MIT",
-  "files": ["library.json"]
+  "files": ["library.json", "node.json"]
 }

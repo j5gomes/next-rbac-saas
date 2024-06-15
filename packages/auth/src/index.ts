@@ -1,3 +1,5 @@
+// NOTE: PERMISSION = tuple with [action, subject] See documentation for more details
+
 import {
   AbilityBuilder,
   CreateAbility,
@@ -14,7 +16,9 @@ import { organizationSubject } from './subjects/organization'
 import { projectSubject } from './subjects/project'
 import { userSubject } from './subjects/user'
 
-// tuple with [action, subject, condition] See documentation for more details
+export * from './modules/user'
+export * from './modules/project'
+export * from './modules/organization'
 
 const appAbilitiesSchema = z.union([
   projectSubject,

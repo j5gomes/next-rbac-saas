@@ -14,7 +14,7 @@ import { organizationSubject } from './subjects/organization'
 import { projectSubject } from './subjects/project'
 import { userSubject } from './subjects/user'
 
-// tuple with [action, subject] See documentation for more details
+// tuple with [action, subject, condition] See documentation for more details
 
 const appAbilitiesSchema = z.union([
   projectSubject,
@@ -38,7 +38,11 @@ export function defineAbilityFor(user: User) {
 
   permissions[user.role](user, builder)
 
-  const ability = builder.build()
+  const ability = builder.build({
+    detectSubjectType(subject) {
+      return subject.__typename
+    },
+  })
 
   return ability
 }

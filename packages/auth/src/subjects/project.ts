@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
+import { projectSchema } from '../modules/project'
+
 // tuple is an array with only to positions
 export const projectSubject = z.tuple([
   z.union([
@@ -9,7 +11,7 @@ export const projectSubject = z.tuple([
     z.literal('update'),
     z.literal('delete'),
   ]),
-  z.literal('Project'),
+  z.union([z.literal('Project'), projectSchema]),
 ])
 
 export type ProjectSubject = z.infer<typeof projectSubject>

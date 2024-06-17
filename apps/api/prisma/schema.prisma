@@ -1,0 +1,138 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String  @id @default(uuid())
+  name         String?
+  email        String  @unique
+  passwordHash String? @map("password_hash") // NOTE: @map renames the field name
+  avatar_url   String? @map("avatar_url")
+
+  tokens             Token[]
+  accounts           Account[]
+  invites            Invite[]
+  member_on          Members[] // NOTE: Rename from members to member_on becuase a user is an member on many organizations (improves readability)
+  owns_organizations Organization[] // NOTE: A user can own many organizations
+  owns_projects      Projects[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("users")
+}
+
+enum TokenType {
+  PASSWORD_RECOVER
+}
+
+model Token {
+  id   String    @id @default(uuid())
+  type TokenType
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("token")
+}
+
+enum AccoutProvider {
+  GITHUB
+}
+
+model Account {
+  id                String         @id @default(uuid())
+  provider          AccoutProvider
+  providerAccountId String         @unique @map("provider_account_id")
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+
+  @@unique([provider, userId]) // NOTE: Makes sure that the user only have an unique provider <-> user relation
+  @@map("account")
+}
+
+enum Role {
+  ADMIN
+  MEMBER
+  BILLING
+}
+
+model Invite {
+  id    String @id @default(uuid())
+  email String
+  role  Role
+
+  author User?  @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String       @map("organization_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@unique([email, organizationId]) // NOTE: Makes sure that we dont have invites with the same email in a organization
+  @@index([email])
+  @@map("invites")
+}
+
+model Members {
+  id   String @id @default(uuid())
+  role Role   @default(MEMBER)
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String       @map("organization_id")
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+
+  @@unique([organizationId, userId]) // NOTE: A user cant be 2 times in the same organization
+  @@map("members")
+}
+
+model Organization {
+  id                        String  @id @default(uuid())
+  name                      String
+  slug                      String  @unique
+  domain                    String? @unique
+  shouldAttachUsersByDomain Boolean @default(false) @map("should_attach_users_by_domain") // NOTE: When the user sign in and the email domain is the same as an organization the user is automatically linked to the organization, feature flag 
+  avatarUrl                 String? @map("avatar_url")
+
+  owner  User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+
+  invites  Invite[]
+  members  Members[]
+  projects Projects[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("organization")
+}
+
+model Projects {
+  id          String  @id @default(uuid())
+  name        String
+  description String
+  slug        String  @unique
+  avatarUrl   String? @map("avatar_url")
+
+  owner  User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId String       @map("organization_id")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("projects")
+}

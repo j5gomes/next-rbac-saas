@@ -12,7 +12,8 @@ model User {
   name         String?
   email        String  @unique
   passwordHash String? @map("password_hash") // NOTE: @map renames the field name
-  avatar_url   String? @map("avatar_url")
+
+  avatarUrl String? @map("avatar_url")
 
   tokens             Token[]
   accounts           Account[]

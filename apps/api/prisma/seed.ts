@@ -14,7 +14,7 @@ async function seed() {
     data: {
       name: faker.person.firstName(),
       email: faker.internet.email(),
-      avatar_url: faker.image.avatarGitHub(),
+      avatarUrl: faker.image.avatarGitHub(),
       passwordHash,
     },
   })
@@ -22,7 +22,7 @@ async function seed() {
     data: {
       name: faker.person.firstName(),
       email: faker.internet.email(),
-      avatar_url: faker.image.avatarGitHub(),
+      avatarUrl: faker.image.avatarGitHub(),
       passwordHash,
     },
   })
@@ -30,7 +30,7 @@ async function seed() {
     data: {
       name: faker.person.firstName(),
       email: faker.internet.email(),
-      avatar_url: faker.image.avatarGitHub(),
+      avatarUrl: faker.image.avatarGitHub(),
       passwordHash,
     },
   })

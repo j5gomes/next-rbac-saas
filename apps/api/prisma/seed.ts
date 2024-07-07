@@ -9,6 +9,7 @@ async function seed() {
   await prisma.user.deleteMany()
 
   const passwordHash = await hash('123456', 1)
+
   const user = await prisma.user.create({
     data: {
       name: faker.person.firstName(),

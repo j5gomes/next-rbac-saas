@@ -52,7 +52,7 @@ app.setErrorHandler(errorHandler)
 app.register(fastifySwagger, {
   openapi: {
     info: {
-      title: 'NEXT SAAS RBAC API',
+      title: 'SAAS RBAC API',
       description: 'Fullstack app to learn multi-tenant and rbac',
       version: '1.0.0',
     },

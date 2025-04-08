@@ -1,56 +1,68 @@
-import { organizationSchema } from '@saas/auth'
 import { FastifyInstance } from 'fastify'
 import { ZodTypeProvider } from 'fastify-type-provider-zod'
 import { z } from 'zod'
 
 import { auth } from '@/http/middlewares/auth'
 import { prisma } from '@/lib/prisma'
+import { createSlug } from '@/utils/create-slug'
 import { getUserPermissions } from '@/utils/get-user-permissions'
 
 import { UnauthorizedError } from '../_errors/unauthorized-error'
 
-export async function shutdownOrganization(app: FastifyInstance) {
+export async function createProject(app: FastifyInstance) {
   app
     .withTypeProvider<ZodTypeProvider>()
     .register(auth)
-    .delete(
-      '/organizations/:organizationSlug/shutdown',
+    .post(
+      '/organizations/:organizationSlug/projects',
       {
         schema: {
-          tags: ['organizations'],
-          summary: 'Shutdown organization.',
+          tags: ['projects'],
+          summary: 'Create new project.',
           security: [{ bearerAuth: [] }],
           params: z.object({
             organizationSlug: z.string(),
           }),
+          body: z.object({
+            name: z.string(),
+            description: z.string(),
+          }),
           response: {
-            204: z.null(),
+            201: z.object({
+              projectId: z.string().uuid(),
+            }),
           },
         },
       },
       async (request, response) => {
         const { organizationSlug } = request.params
         const userId = await request.getCurrentUserId()
-
         const { membership, organization } =
           await request.getUserMembership(organizationSlug)
 
         const { cannot } = getUserPermissions(userId, membership.role)
 
-        const authOrganization = organizationSchema.parse(organization)
-
-        // Passing the organization directily makes the cannot check if we are deleting a organization that we own
-        if (cannot('delete', authOrganization)) {
+        if (cannot('create', 'Project')) {
           throw new UnauthorizedError(
-            'You not allowed to shutdown this organization.'
+            'User is not allowed to create a project in this organization.'
           )
         }
 
-        await prisma.organization.delete({
-          where: { id: authOrganization.id },
+        const { name, description } = request.body
+
+        const project = await prisma.project.create({
+          data: {
+            name,
+            slug: createSlug(name),
+            description,
+            organizationId: organization.id,
+            ownerId: userId,
+          },
         })
 
-        return response.status(204).send()
+        return response.status(201).send({
+          projectId: project.id,
+        })
       }
     )
 }

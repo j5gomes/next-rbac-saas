@@ -15,14 +15,14 @@ export async function transferOrganization(app: FastifyInstance) {
     .withTypeProvider<ZodTypeProvider>()
     .register(auth)
     .patch(
-      '/organizations/:slug/owner',
+      '/organizations/:organizationSlug/owner',
       {
         schema: {
           tags: ['organizations'],
           summary: 'Transfer organization ownership.',
           security: [{ bearerAuth: [] }],
           params: z.object({
-            slug: z.string(),
+            organizationSlug: z.string(),
           }),
           body: z.object({
             transferToUserId: z.string().uuid(),
@@ -33,11 +33,11 @@ export async function transferOrganization(app: FastifyInstance) {
         },
       },
       async (request, response) => {
-        const { slug } = request.params
+        const { organizationSlug } = request.params
         const userId = await request.getCurrentUserId()
 
         const { membership, organization } =
-          await request.getUserMembership(slug)
+          await request.getUserMembership(organizationSlug)
 
         const { cannot } = getUserPermissions(userId, membership.role)
 

@@ -15,14 +15,14 @@ export async function updateOrganization(app: FastifyInstance) {
     .withTypeProvider<ZodTypeProvider>()
     .register(auth)
     .put(
-      '/organizations/:slug',
+      '/organizations/:organizationSlug',
       {
         schema: {
           tags: ['organizations'],
           summary: 'Update organization.',
           security: [{ bearerAuth: [] }],
           params: z.object({
-            slug: z.string(),
+            organizationSlug: z.string(),
           }),
           body: z.object({
             name: z.string(),
@@ -35,11 +35,11 @@ export async function updateOrganization(app: FastifyInstance) {
         },
       },
       async (request, response) => {
-        const { slug } = request.params
+        const { organizationSlug } = request.params
         const userId = await request.getCurrentUserId()
 
         const { membership, organization } =
-          await request.getUserMembership(slug)
+          await request.getUserMembership(organizationSlug)
 
         const { name, domain, shouldAttachUsersByDomain } = request.body
 

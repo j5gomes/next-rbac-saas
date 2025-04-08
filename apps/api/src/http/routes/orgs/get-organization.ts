@@ -4,21 +4,19 @@ import { z } from 'zod'
 
 import { auth } from '@/http/middlewares/auth'
 
-import { BadRequestError } from '../_errors/bad-request-error'
-
 export async function getOrganization(app: FastifyInstance) {
   app
     .withTypeProvider<ZodTypeProvider>()
     .register(auth)
     .get(
-      '/organizations/:slug',
+      '/organizations/:organizationSlug',
       {
         schema: {
           tags: ['organizations'],
           summary: 'Get organization details by slug.',
           security: [{ bearerAuth: [] }],
           params: z.object({
-            slug: z.string(),
+            organizationSlug: z.string(),
           }),
           response: {
             200: z.object({
@@ -37,13 +35,14 @@ export async function getOrganization(app: FastifyInstance) {
           },
         },
       },
-      async (request, response) => {
-        const { slug } = request.params
-        const { organization } = await request.getUserMembership(slug)
+      async (request) => {
+        const { organizationSlug } = request.params
+        const { organization } =
+          await request.getUserMembership(organizationSlug)
 
         return {
-            organization
+          organization,
         }
-      },
+      }
     )
 }

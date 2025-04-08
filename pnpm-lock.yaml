@@ -29,12 +29,6 @@ importers:
       '@prisma/client':
         specifier: 5.15.0
         version: 5.15.0(prisma@5.15.0)
-      '@saas/auth':
-        specifier: workspace:*
-        version: link:../../packages/auth
-      '@saas/env':
-        specifier: workspace:*
-        version: link:../../packages/env
       bcryptjs:
         specifier: ^2.4.3
         version: 2.4.3
@@ -54,6 +48,12 @@ importers:
       '@faker-js/faker':
         specifier: ^8.4.1
         version: 8.4.1
+      '@saas/auth':
+        specifier: workspace:*
+        version: link:../../packages/auth
+      '@saas/env':
+        specifier: workspace:*
+        version: link:../../packages/env
       '@saas/eslint-config':
         specifier: workspace:*
         version: link:../../config/eslint-config

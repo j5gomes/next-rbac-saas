@@ -81,5 +81,5 @@ Roles & permissions.
 - Only owners may transfer organization ownership;
 - Only administrators and project authors may update/delete the project;
 - Members can leave their own organization;
-- Members can list all members within their organization and view basic details.
-- Members can list all projects within their organizations.
+
+

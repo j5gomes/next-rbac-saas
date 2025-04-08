@@ -6,7 +6,7 @@ import { Role } from './roles'
 
 type PermissionsByRole = (
   user: User,
-  builder: AbilityBuilder<AppAbility>,
+  builder: AbilityBuilder<AppAbility>
 ) => void
 
 export const permissions: Record<Role, PermissionsByRole> = {
@@ -17,8 +17,6 @@ export const permissions: Record<Role, PermissionsByRole> = {
     can(['transfer_ownership', 'update'], 'Organization', {
       ownerId: { $eq: user.id },
     })
-
-    cannot('update', 'Organization')
   },
   MEMBER: (user, { can }) => {
     can('get', 'User')

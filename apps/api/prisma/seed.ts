@@ -12,12 +12,13 @@ async function seed() {
 
   const user = await prisma.user.create({
     data: {
-      name: faker.person.firstName(),
-      email: faker.internet.email(),
+      name: 'joao',
+      email: 'joao@significa.co',
       avatarUrl: faker.image.avatarGitHub(),
       passwordHash,
     },
   })
+
   const user2 = await prisma.user.create({
     data: {
       name: faker.person.firstName(),
@@ -26,12 +27,73 @@ async function seed() {
       passwordHash,
     },
   })
+
   const user3 = await prisma.user.create({
     data: {
       name: faker.person.firstName(),
       email: faker.internet.email(),
       avatarUrl: faker.image.avatarGitHub(),
       passwordHash,
+    },
+  })
+
+  await prisma.organization.create({
+    data: {
+      name: 'Significa.co',
+      domain: 'significa.co',
+      slug: 'significa',
+      avatarUrl: faker.image.avatarGitHub(),
+      shouldAttachUsersByDomain: true,
+      ownerId: user.id,
+      projects: {
+        createMany: {
+          data: [
+            {
+              name: 'Bion',
+              slug: 'bion',
+              description: faker.lorem.paragraph(),
+              avatarUrl: faker.image.avatarGitHub(),
+              ownerId: faker.helpers.arrayElement([user.id]),
+            },
+            {
+              name: 'Mishmash',
+              slug: 'mishmash',
+              description: faker.lorem.paragraph(),
+              avatarUrl: faker.image.avatarGitHub(),
+              ownerId: faker.helpers.arrayElement([
+                user.id,
+                user2.id,
+                user3.id,
+              ]),
+            },
+            {
+              name: 'TFP',
+              slug: 'tfp',
+              description: faker.lorem.paragraph(),
+              avatarUrl: faker.image.avatarGitHub(),
+              ownerId: faker.helpers.arrayElement([user.id, user2.id]),
+            },
+          ],
+        },
+      },
+      members: {
+        createMany: {
+          data: [
+            {
+              userId: user.id,
+              role: 'ADMIN',
+            },
+            {
+              userId: user2.id,
+              role: 'MEMBER',
+            },
+            {
+              userId: user3.id,
+              role: 'MEMBER',
+            },
+          ],
+        },
+      },
     },
   })
 
@@ -237,5 +299,5 @@ async function seed() {
 }
 
 seed().then(() => {
-  console.log('Databse seeded')
+  console.log('Database seeded')
 })

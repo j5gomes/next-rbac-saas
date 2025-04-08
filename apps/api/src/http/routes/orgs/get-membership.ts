@@ -9,8 +9,8 @@ export async function getMembership(app: FastifyInstance) {
   app
     .withTypeProvider<ZodTypeProvider>()
     .register(auth)
-    .post(
-      '/orgs/:slug/membership',
+    .get(
+      '/organizations/:slug/membership',
       {
         schema: {
           tags: ['organizations'],
@@ -41,6 +41,6 @@ export async function getMembership(app: FastifyInstance) {
             organizationId: membership.organizationId,
           },
         }
-      },
+      }
     )
 }

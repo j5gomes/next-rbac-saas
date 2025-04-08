@@ -11,10 +11,10 @@
     },
     "eslintConfig": {
         "extends": [
-            "@sass/eslint-config/library"
+            "@saas/eslint-config/library"
         ]
     },
-    "prettier": "@sass/prettier",
+    "prettier": "@saas/prettier",
     "dependencies": {
         "@t3-oss/env-nextjs": "^0.10.1",
         "@types/node": "^20.14.2",
